@@ -56,8 +56,6 @@ HAL_GPIO_PIN(PWR, A, 2)
 static volatile int app_system_time;
 static bool app_menu_mode = false;
 
-int mode = 0;
-
 /*- Implementations ---------------------------------------------------------*/
 
 //-----------------------------------------------------------------------------
