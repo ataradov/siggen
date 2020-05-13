@@ -93,6 +93,9 @@ HAL_GPIO_PIN(OLED_SDA,        A, 4);
 #define I2C_TRANSFER_WRITE   0
 #define I2C_TRANSFER_READ    1
 
+/*- Prototypes --------------------------------------------------------------*/
+void sleep_ms(int ms);
+
 /*- Variables ---------------------------------------------------------------*/
 static const font_t *oled_font = NULL;
 static bool oled_inverted = false;
@@ -183,9 +186,11 @@ void oled_init(void)
     SSD1306_CMD_SET_DISPLAY_ON,
   };
 
-  i2c_init();
+  sleep_ms(2000);
 
+  i2c_init();
   i2c_start();
+
   i2c_write_byte(SSD1306_COMMAND);
 
   for (int i = 0; i < (int)sizeof(commands); i++)

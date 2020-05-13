@@ -343,49 +343,40 @@ static void update_display(void)
 //-----------------------------------------------------------------------------
 void counter_buttons_event(int button, int event, int interval)
 {
-  static int pressed = 0;
   static int hold_time = 0;
+  bool both_pressed = false;
 
   if (BUTTON_PRESSED == event && BUTTON_CENTER == button)
     return set_menu_mode();
 
-  if (BUTTON_PRESSED == event)
-  {
-    if (BUTTON_RIGHT == button || BUTTON_LEFT == button)
-      pressed++;
-  }
-  else if (BUTTON_RELEASED == event)
-  {
-    if (BUTTON_RIGHT == button || BUTTON_LEFT == button)
-      pressed--;
-  }
+  both_pressed = buttons_pressed(BUTTON_RIGHT) && buttons_pressed(BUTTON_LEFT);
 
   if (BUTTON_REPEAT == event && BUTTON_RIGHT == button)
   {
-    if (2 == pressed)
+    if (both_pressed)
       hold_time += interval;
     else
       hold_time = 0;
-
-    if (hold_time > 2000)
-    {
-      counter_trim_mode = !counter_trim_mode;
-
-      if (counter_trim_mode)
-      {
-        update_display();
-      }
-      else
-      {
-        oled_set_font(SMALL);
-        oled_print(3, 0, "                 ");
-      }
-
-      hold_time = 0;
-    }
   }
 
-  if (!counter_trim_mode || pressed > 1)
+  if (hold_time > 2000)
+  {
+    counter_trim_mode = !counter_trim_mode;
+
+    if (counter_trim_mode)
+    {
+      update_display();
+    }
+    else
+    {
+      oled_set_font(SMALL);
+      oled_print(3, 0, "                 ");
+    }
+
+    hold_time = 0;
+  }
+
+  if (!counter_trim_mode || both_pressed)
     return;
 
   if (BUTTON_PRESSED == event || BUTTON_REPEAT == event)
